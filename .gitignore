@@ -1,17 +1,20 @@
 ### My directory ###
 venv*/
-tf/tf_files/training_summaries/*
-!tf/tf_files/training_summaries/.empty
 tf/tf_files/bottlenecks/*
 !tf/tf_files/bottlenecks/.empty
 tf/tf_files/dataset/*
 !tf/tf_files/dataset/.empty
 tf/tf_files/datatest/*
 !tf/tf_files/datatest/.empty
+tf/tf_files/models/*
+!tf/tf_files/models/.empty
+tf/tf_files/training_summaries/*
+!tf/tf_files/training_summaries/.empty
 tf/tf_files/uploads/dataset/*
 !tf/tf_files/uploads/dataset/.empty
 tf/tf_files/uploads/user-images/*
 !tf/tf_files/uploads/user-images/.empty
+
 
 ### Python ###
 __pycache__/

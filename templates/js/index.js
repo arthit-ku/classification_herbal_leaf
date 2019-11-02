@@ -34,22 +34,19 @@ class Cookie {
         return "";
     }
     checkCookie(cname) {
-        let cookieName = this.getCookie(cname);
-        if (cookieName != "") {
-            return true;
-        } else {
-            return false;
-        }
+        return this.getCookie(cname) != "";
     }
 }
 
 /**
  * Dom Event
  */
-
+/* Crypto random is safty don't use Math.random */
+const crypto = window.crypto || window.msCrypto;
+var IDarray = new Uint32Array(1);
 window.addEventListener('DOMContentLoaded', () => {
     let cookie = new Cookie();
-    if (!cookie.checkCookie("id")) cookie.setCookie("id", Math.random().toString(36).substr(2, 10), 1);
+    if (!cookie.checkCookie("id")) cookie.setCookie("id", (+`0.${crypto.getRandomValues(IDarray)}`).toString(36).substr(2,10), 1);
     sessionStorage.setItem("TopOne", "leaf");
     let $selectLeaf = $("#leafs");
     let $alert = $('#results-predict');
@@ -158,15 +155,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     input.addEventListener('change', (e) => {
         var files = e.target.files;
-        var done = (url) => {
+        var done = (imgUrl) => {
             input.value = '';
-            image.src = url;
+            image.src = imgUrl;
             $alert.hide();
             $modal.modal('show');
         };
         var reader;
         var file;
-        var url;
 
         if (files && files.length > 0) {
             file = files[0];
@@ -175,7 +171,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 done(URL.createObjectURL(file));
             } else if (FileReader) {
                 reader = new FileReader();
-                reader.onload = (e) => {
+                reader.onload = () => {
                     done(reader.result);
                 };
                 reader.readAsDataURL(file);
@@ -204,16 +200,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     var xhr = new XMLHttpRequest();
 
                     xhr.upload.onprogress = (e) => {
-                        var percent = '0';
-                        var percentage = '0%';
-
                         if (e.lengthComputable) {
-                            percent = Math.round((e.loaded / e.total) * 100);
-                            percentage = percent + '%';
-                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                            let percent = Math.round((e.loaded / e.total) * 100);
+                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(`${percent}%`);
                         }
                     };
-
                     return xhr;
                 }
             }).done((res) => {
