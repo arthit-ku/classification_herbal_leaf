@@ -15,7 +15,7 @@ tf/tf_files/uploads/dataset/*
 tf/tf_files/uploads/user-images/*
 !tf/tf_files/uploads/user-images/.empty
 tf/tf_files/retrained_graph.pb
-tf/tf_files/retrained_graph.txt
+tf/tf_files/retrained_labels.txt
 
 ### Python ###
 __pycache__/
