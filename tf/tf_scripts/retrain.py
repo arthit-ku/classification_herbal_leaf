@@ -16,10 +16,6 @@ import numpy as np
 from six.moves import urllib
 import tensorflow as tf
 
-# from tensorflow.python.framework import graph_util
-from tensorflow.python.framework import tensor_shape
-from tensorflow.python.platform import gfile
-from tensorflow.python.util import compat
 FLAGS = None
 
 # These are all parameters that are tied to the particular model architecture
@@ -41,7 +37,7 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
     sub_dirs = sorted(item for item in sub_dirs
                       if tf.compat.v1.gfile.IsDirectory(item))
     for sub_dir in sub_dirs:
-        extensions = ['jpg', 'jpeg', 'JPG', 'JPEG']
+        extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp']
         file_list = []
         dir_name = os.path.basename(sub_dir)
         if dir_name == image_dir:
@@ -68,7 +64,7 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
             base_name = os.path.basename(file_name)
             hash_name = re.sub(r'_nohash_.*$', '', file_name)
             hash_name_hashed = hashlib.sha1(
-                compat.as_bytes(hash_name)).hexdigest()
+                tf.compat.as_bytes(hash_name)).hexdigest()
             percentage_hash = ((int(hash_name_hashed, 16) %
                                 (MAX_NUM_IMAGES_PER_CLASS + 1)) *
                                (100.0 / MAX_NUM_IMAGES_PER_CLASS))
@@ -178,9 +174,9 @@ def create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
     tf.compat.v1.logging.info('Creating bottleneck at ' + bottleneck_path)
     image_path = get_image_path(image_lists, label_name, index,
                                 image_dir, category)
-    if not gfile.Exists(image_path):
+    if not tf.compat.v1.gfile.Exists(image_path):
         tf.compat.v1.logging.fatal('File does not exist %s', image_path)
-    image_data = gfile.FastGFile(image_path, 'rb').read()
+    image_data = tf.compat.v1.gfile.GFile(image_path, 'rb').read()
     try:
         bottleneck_values = run_bottleneck_on_image(
             sess, image_data, jpeg_data_tensor, decoded_image_tensor,
@@ -306,9 +302,9 @@ def get_random_distorted_bottlenecks(
         image_index = random.randrange(MAX_NUM_IMAGES_PER_CLASS + 1)
         image_path = get_image_path(image_lists, label_name, image_index, image_dir,
                                     category)
-        if not gfile.Exists(image_path):
+        if not tf.compat.v1.gfile.Exists(image_path):
             tf.compat.v1.logging.fatal('File does not exist %s', image_path)
-        jpeg_data = gfile.FastGFile(image_path, 'rb').read()
+        jpeg_data = tf.compat.v1.gfile.GFile(image_path, 'rb').read()
         # Note that we materialize the distorted_image_data as a numpy array before
         # sending running inference on the image. This involves 2 memory copies and
         # might be optimized in other implementations.
@@ -344,7 +340,7 @@ def add_input_distortions(flip_left_right, random_crop, random_scale,
     margin_scale = 1.0 + (random_crop / 100.0)
     resize_scale = 1.0 + (random_scale / 100.0)
     margin_scale_value = tf.compat.v1.constant(margin_scale)
-    resize_scale_value = tf.compat.v1.random_uniform(tensor_shape.scalar(),
+    resize_scale_value = tf.compat.v1.random_uniform(tf.compat.v1.TensorShape([]),
                                                      minval=1.0,
                                                      maxval=resize_scale)
     scale_value = tf.compat.v1.multiply(margin_scale_value, resize_scale_value)
@@ -365,7 +361,8 @@ def add_input_distortions(flip_left_right, random_crop, random_scale,
         flipped_image = cropped_image
     brightness_min = 1.0 - (random_brightness / 100.0)
     brightness_max = 1.0 + (random_brightness / 100.0)
-    brightness_value = tf.compat.v1.random_uniform(tensor_shape.scalar(),
+    tf.compat.v1.scalar
+    brightness_value = tf.compat.v1.random_uniform(tf.compat.v1.TensorShape([]),
                                                    minval=brightness_min,
                                                    maxval=brightness_max)
     brightened_image = tf.compat.v1.multiply(flipped_image, brightness_value)
@@ -427,7 +424,7 @@ def add_final_training_ops(class_count, final_tensor_name, bottleneck_tensor,
     tf.compat.v1.summary.histogram('activations', final_tensor)
 
     with tf.compat.v1.name_scope('cross_entropy'):
-        cross_entropy = tf.nn.softmax_cross_entropy_with_logits(
+        cross_entropy = tf.compat.v2.nn.softmax_cross_entropy_with_logits(
             labels=ground_truth_input, logits=logits)
         with tf.compat.v1.name_scope('total'):
             cross_entropy_mean = tf.compat.v1.reduce_mean(cross_entropy)
@@ -786,7 +783,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--summaries_dir',
         type=str,
-        default='tf_files/training_summaries/',
+        default='tf_files/training_summaries/inception_v3',
         help='Where to save summary logs for TensorBoard.'
     )
     parser.add_argument(
