@@ -884,7 +884,8 @@ def export_model(module_spec, class_count, saved_model_dir):
       saved_model_dir: Directory in which to save exported model and variables.
     """
     # The SavedModel should hold the eval graph.
-    # in directory `saved_model_dir` should empty folder.
+    # In path directory `saved_model_dir` should empty folder.
+    ensure_dir_exists(saved_model_dir)
     if len(os.listdir(saved_model_dir)) == 0:
         sess, in_image, _, _, _, _ = build_eval_session(
             module_spec, class_count)
