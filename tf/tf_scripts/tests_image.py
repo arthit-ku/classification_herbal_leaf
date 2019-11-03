@@ -104,15 +104,64 @@ if __name__ == "__main__":
     output_layer = "final_result"
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_dir", help="image directory to be processed")
-    parser.add_argument("--graph", help="graph/model to be executed")
-    parser.add_argument("--labels", help="name of file containing labels")
-    parser.add_argument("--input_height", type=int, help="input height")
-    parser.add_argument("--input_width", type=int, help="input width")
-    parser.add_argument("--input_mean", type=int, help="input mean")
-    parser.add_argument("--input_std", type=int, help="input std")
-    parser.add_argument("--input_layer", help="name of input layer")
-    parser.add_argument("--output_layer", help="name of output layer")
+    parser.add_argument(
+        "--image_dir",
+        type=str,
+        default="tf/tf_files/datatest",
+        help="image directory to be processed"
+    )
+    parser.add_argument(
+        "--graph",
+        type=str,
+        default='tf/tf_files/retrained_graph.pb',
+        help="""\
+      Path to classify_image_graph_def.pb,
+      imagenet_synset_to_human_label_map.txt, and
+      imagenet_2012_challenge_label_map_proto.pbtxt.\
+      """
+    )
+    parser.add_argument(
+        "--labels",
+        type=str,
+        default='tf/tf_files/retrained_labels.txt',
+        help="name of file containing labels"
+    )
+    parser.add_argument(
+        "--input_height",
+        type=int,
+        default=299,
+        help="input height"
+    )
+    parser.add_argument(
+        "--input_width",
+        type=int,
+        default=299,
+        help="input width"
+    )
+    parser.add_argument(
+        "--input_mean",
+        type=int,
+        default=128,
+        help="input mean"
+    )
+    parser.add_argument(
+        "--input_std",
+        type=int,
+        default=128,
+        help="input std"
+    )
+    parser.add_argument(
+        "--input_layer",
+        type=str,
+        default="Mul",
+        help="name of input layer"
+    )
+    parser.add_argument(
+        "--output_layer",
+        type=str,
+        default="final_result",
+        help="name of output layer"
+    )
     args = parser.parse_args()
 
     if args.graph:

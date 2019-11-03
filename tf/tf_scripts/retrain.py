@@ -750,19 +750,19 @@ if __name__ == '__main__':
     parser.add_argument(
         '--image_dir',
         type=str,
-        default='tf_files/dataset',
+        default='tf/tf_files/dataset',
         help='Path to folders of labeled images.'
     )
     parser.add_argument(
         '--output_graph',
         type=str,
-        default='tf_files/retrained_graph.pb',
+        default='tf/tf_files/retrained_graph.pb',
         help='Where to save the trained graph.'
     )
     parser.add_argument(
         '--intermediate_output_graphs_dir',
         type=str,
-        default='tf_files/intermediate_graph/',
+        default='tf/tf_files/intermediate_graph/',
         help='Where to save the intermediate graphs.'
     )
     parser.add_argument(
@@ -777,13 +777,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--output_labels',
         type=str,
-        default='tf_files/retrained_labels.txt',
+        default='tf/tf_files/retrained_labels.txt',
         help='Where to save the trained graph\'s labels.'
     )
     parser.add_argument(
         '--summaries_dir',
         type=str,
-        default='tf_files/training_summaries/inception_v3',
+        default='tf/tf_files/training_summaries/inception_v3',
         help='Where to save summary logs for TensorBoard.'
     )
     parser.add_argument(
@@ -857,7 +857,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--model_dir',
         type=str,
-        default='tf_files/models',
+        default='tf/tf_files/models',
         help="""\
       Path to classify_image_graph_def.pb,
       imagenet_synset_to_human_label_map.txt, and
@@ -867,7 +867,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--bottleneck_dir',
         type=str,
-        default='tf_files/bottlenecks',
+        default='tf/tf_files/bottlenecks',
         help='Path to cache bottleneck layer values as files.'
     )
     parser.add_argument(
