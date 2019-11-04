@@ -485,7 +485,7 @@ def create_model_info(architecture):
         model_file_name = 'classify_image_graph_def.pb'
         input_mean = 128
         input_std = 128
-    elif architecture.startswith('mobilenet_'):
+    elif architecture.startswith('mobilenetv1'):
         parts = architecture.split('_')
         if len(parts) != 3 and len(parts) != 4:
             tf.compat.v1.logging.error("Couldn't understand architecture name '%s'",
@@ -530,6 +530,17 @@ def create_model_info(architecture):
             model_base_name = 'frozen_graph.pb'
         model_dir_name = 'mobilenet_v1_' + version_string + '_' + size_string
         model_file_name = os.path.join(model_dir_name, model_base_name)
+        input_mean = 127.5
+        input_std = 127.5
+    elif architecture.startswith('mobilenetv2'):
+        data_url = ''
+        bottleneck_tensor_name = 'MobilenetV2/Predictions/Reshape:0'
+        bottleneck_tensor_size = 1001
+        input_width = 224
+        input_height = 224
+        input_depth = 3
+        resized_input_tensor_name = 'input:0'
+        model_file_name = 'mobilenet_v2_1.4_224_frozen.pb'
         input_mean = 127.5
         input_std = 127.5
     else:
@@ -584,7 +595,8 @@ def main(_):
         return -1
 
     # Set up the pre-trained graph.
-    maybe_download_and_extract(model_info['data_url'])
+    if not FLAGS.architecture.startswith('mobilenetv2'):
+        maybe_download_and_extract(model_info['data_url'])
     graph, bottleneck_tensor, resized_image_tensor = (
         create_model_graph(model_info))
 
