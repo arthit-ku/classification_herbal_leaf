@@ -251,10 +251,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }).done((res) => {
                 if (res.status == "success") {
                     $results.empty();
-                    if (sessionStorage.getItem("leafs") == null)
-                        sessionStorage.setItem("leafs", JSON.stringify(res.response.leafs));
+                    sessionStorage.setItem("leafs", JSON.stringify(res.response.leafs));
+                    if (res.response.notperfect_leaf == true) {
+                        $("#after_accurate").after('<th>สภาพใบ</th>');
+                    } else {
+                        $("#after_accurate").next('th').remove();
+                    }
                     $.each(res.response.results, (_i, result) => {
-
                         let score = parseInt(result.percent);
                         let fadeColor = parseInt(score.map(0, 100, 80, 255).toFixed()).toString(16);
                         let cls = '';
@@ -263,11 +266,19 @@ window.addEventListener('DOMContentLoaded', () => {
                             fadeColor = "ff";
                             cls = 'class="table-success"';
                         }
-                        $results.append(`<tr ${cls} style="color:#155724${fadeColor}">
+                        if (res.response.notperfect_leaf == true) {
+                            $results.append(`<tr ${cls} style="color:#155724${fadeColor}">
                                             <td>${result.leafThai}</td>
                                             <td>${result.percent}%</td>
                                             <td>${result.perfect}</td>
+
                                         </tr>`);
+                        } else {
+                            $results.append(`<tr ${cls} style="color:#155724${fadeColor}">
+                                            <td>${result.leafThai}</td>
+                                            <td>${result.percent}%</td>
+                                        </tr>`);
+                        }
                     });
                     $("#results-box").removeClass('d-none');
                     $alert.show().addClass('alert-success');

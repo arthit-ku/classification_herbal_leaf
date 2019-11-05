@@ -56,8 +56,7 @@
               <thead>
                 <tr>
                   <th>ใบ</th>
-                  <th>ความถูกต้อง</th>
-                  <th>สภาพใบ</th>
+                  <th id="after_accurate">ความถูกต้อง</th>
                 </tr>
               </thead>
               <tbody id="results">
@@ -134,11 +133,12 @@
         <div class="modal-content">
           <div class="modal-body">
             <div class="img-container" style="max-height: 75vh">
-              <img id="image" src="img/logo-ku.png">
+              <img id="image" src="img/leaf.png">
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
+            <button type="button" class="btn btn-primary" onclick="cropper.reset()">ล้าง</button>
             <button type="button" class="btn btn-primary" onclick="cropper.rotate(90)">หมุน</button>
             <button type="button" class="btn btn-primary" id="crop" data-dismiss="modal">ครอป</button>
           </div>

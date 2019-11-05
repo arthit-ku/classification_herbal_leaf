@@ -157,9 +157,13 @@ def preprocessing(file, locate_file_path, client_id):
     for i in labels:
         result = {}
         result["leaf"] = i
-        result["leafThai"] = 'ใบ{}{}'.format(
-            leafName[i][0], leafPerfect[leafName[i][1]])
+        if notperfect_leaf is True:
+            result["leafThai"] = 'ใบ{}{}'.format(
+                leafName[i][0], leafPerfect[leafName[i][1]])
+        else:
+            result["leafThai"] = 'ใบ{}'.format(leafName[i][0])
         Return["leafs"].append(result)
+    Return["notperfect_leaf"] = notperfect_leaf
     return Return
 
 
@@ -212,6 +216,8 @@ def load_labels(label_file, path=False):
 
 
 if __name__ == "__main__":
+    # enable notprefect mode
+    notperfect_leaf = False
     file_name = "tf/tf_files/uploads/leaf.png"
     model_file = "tf/tf_files/retrained_graph.pb"
     label_file = "tf/tf_files/retrained_labels.txt"
