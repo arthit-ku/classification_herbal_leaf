@@ -740,7 +740,7 @@ def main(_):
                             end = time.time()
                             # Write out the trained graph and labels with the weights stored as
                             # constants.
-                            output_graph = 'tf/tf_files/retrained_graph_{}-PT{}-LR{}-TS{}.pb'.format(
+                            output_graph = 'tf/tf_files/retrained_graphs/retrained_graph_{}-PT{}-LR{}-TS{}.pb'.format(
                                 model_name, percent_test_validate, learning_rate, training_step)
                             save_graph_to_file(sess, graph, output_graph)
                             row['time'] = round(end - start, 2)
