@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-  <title>ระบบจำแนกใบสมุนไพร</title>
+  <title>classify herbal leaf</title>
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/cropper.js"></script>
-  <script src="js/index.js"></script>
+  <script src="js/index.en.js"></script>
   <script src="js/sweetalert2@8.js"></script>
   <link rel="stylesheet" href="css/font.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -24,7 +24,7 @@
         <img src="img/logo-ku.png" alt="logo" width="80px">
       </li>
       <li>
-        <h2 style="color: #d5ffd9; font-weight: bolder; margin: 10px;">จำแนกใบสมุนไพร</h2>
+        <h2 style="color: #d5ffd9; font-weight: bolder; margin: 10px;">classify herbal leaf</h2>
       </li>
     </ul>
   </nav>
@@ -41,14 +41,14 @@
         <div class="img-box border border-success">
           <img class="img-this" id="avatar" src="img/leaf.png" alt="avatar" width="200px">
         </div>
-        <label for="input" id="bt-camera" data-toggle="tooltip" data-placement="right" title="กดที่นี่เพื่อถ่ายภาพ">
+        <label for="input" id="bt-camera" data-toggle="tooltip" data-placement="right" title="Click here to take a photo">
           <img src="svg/camera.svg" alt="camera" width="100px">
           <input type="file" class="sr-only" id="input" name="image" accept="image/*">
         </label>
         <br>
         <label for="predict" id="bt-predict" data-toggle="tooltip" data-placement="right"
-          title="กดที่นี่เพื่อเริ่มจำแนก">
-          <img id="predict" src="svg/predict.svg" alt="วัตถุจำแนก" width="100px" style="display: none;">
+          title="Click here to start classifying">
+          <img id="predict" src="svg/predict.svg" alt="item" width="100px" style="display: none;">
         </label>
 
         <div class="progress justify-content-start">
@@ -58,13 +58,13 @@
 
         <div class="alert" id="results-predict" role="alert">
           <div class="d-none" id="results-box">
-            <h3>ผลจำแนกใบสมุนไพร</h3>
+            <h3>Results</h3>
             <table class="table">
               <thead>
                 <tr>
-                  <th>ใบ</th>
-                  <th id="this_accurate">ความถูกต้อง</th>
-                  <th id="this_prefect">ความสมบูรณ์</th>
+                  <th>leaf</th>
+                  <th id="this_accurate">Accuracy</th>
+                  <th id="this_prefect">Leaf condition</th>
                 </tr>
               </thead>
               <tbody id="results">
@@ -85,7 +85,7 @@
 
           <!-- Modal Header -->
           <div class="modal-header">
-            <h4 class="modal-title">รายงานใบสมุนไพร</h4>
+            <h4 class="modal-title">Report</h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
 
@@ -94,11 +94,11 @@
             <div class="row">
               <div class="col-6 text-center">
                 <button type="button" data-dismiss="modal" data-toggle="modal" id="accurate" class="btn btn-success"
-                  data-target="#select-leaf">ผลจำแนกถูก</button>
+                  data-target="#select-leaf">Correct results</button>
               </div>
               <div class="col-6 text-center">
                 <button type="button" data-dismiss="modal" data-toggle="modal" id="inaccurate" class="btn btn-warning"
-                  data-target="#select-leaf">ผลจำแนกผิด</button>
+                  data-target="#select-leaf">Incorrect results</button>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@
 
           <!-- Modal Header -->
           <div class="modal-header">
-            <h4 class="modal-title">นี่คือใบอะไร?</h4>
+            <h4 class="modal-title">Choose correct leaf</h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
 
@@ -126,7 +126,7 @@
                   <select name="leafs" class="custom-select" id="leafs" required></select>
                 </div>
                 <div class="col-4">
-                  <button type="submit" class="btn btn-success" id="leaf-save">บันทึก</button>
+                  <button type="submit" class="btn btn-success" id="leaf-save">Save</button>
                 </div>
               </div>
             </form>
@@ -145,10 +145,10 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-            <button type="button" class="btn btn-primary" onclick="cropper.reset()">ล้าง</button>
-            <button type="button" class="btn btn-primary" onclick="cropper.rotate(90)">หมุน</button>
-            <button type="button" class="btn btn-primary" id="crop" data-dismiss="modal">ครอป</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="cropper.reset()">Clear</button>
+            <button type="button" class="btn btn-primary" onclick="cropper.rotate(90)">Rolate</button>
+            <button type="button" class="btn btn-primary" id="crop" data-dismiss="modal">Crop</button>
           </div>
         </div>
       </div>

@@ -34,24 +34,59 @@ class Cookie {
         return "";
     }
     checkCookie(cname) {
-        return this.getCookie(cname) != "";
+        let cookieName = this.getCookie(cname);
+        if (cookieName != "") {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
+var tooltip = () => {},
+    idTooltip;
+tooltip = tooltip.prototype = {
+    showTooltip: (val, start = 3000, stop = 9000) => {
+        $.each(val, (x, y) => {
+            idTooltip = setTimeout(() => {
+                $(y).tooltip('show');
+            }, start);
+            idTooltip = setTimeout(() => {
+                $(y).tooltip('hide');
+            }, stop);
+        });
+    },
+    showAny: (val) => {
+        $.each(val, (x, y) => {
+            $(y).tooltip('show');
+        });
+    },
+    hideAny: (val) => {
+        $.each(val, (x, y) => {
+            $(y).tooltip('hide');
+        });
+    }
+};
+Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+    return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+};
 
 /**
  * Dom Event
  */
-/* Crypto random is safty don't use Math.random */
-const crypto = window.crypto || window.msCrypto;
-var IDarray = new Uint32Array(1);
+
 window.addEventListener('DOMContentLoaded', () => {
     let cookie = new Cookie();
-    if (!cookie.checkCookie("id")) cookie.setCookie("id", (+`0.${crypto.getRandomValues(IDarray)}`).toString(36).substr(2,10), 1);
+    if (!cookie.checkCookie("id")) cookie.setCookie("id", Math.random().toString(36).substr(2, 10), 1);
     sessionStorage.setItem("TopOne", "leaf");
     let $selectLeaf = $("#leafs");
     let $alert = $('#results-predict');
     let $boxSaveImg = $('#box-save-img');
     $alert.hide();
+    tooltip.showTooltip(['#bt-camera']); // '#bt-predict'
+    $('#lang').on('change', () => {
+        let lang = $('#lang').val();
+        window.location.href = "/" + lang;
+    });
     $("#accurate").click(() => {
         $selectLeaf.empty();
         try {
@@ -72,7 +107,7 @@ window.addEventListener('DOMContentLoaded', () => {
         try {
             let leafs = JSON.parse(sessionStorage.getItem("leafs"));
             $selectLeaf.prop('disabled', false);
-            $selectLeaf.append(`<option value="0" selected hidden>กรุณาเลือกใบ</option>`);
+            $selectLeaf.append(`<option value="0" selected hidden>Select leaf</option>`);
             $.each(leafs, (idx, obj) => {
                 $selectLeaf.append(`<option value="${obj.leaf}">${obj.leafThai}</option>`);
             });
@@ -95,12 +130,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 if (res.status == "success") {
                     Swal.fire({
                         type: 'success',
-                        title: 'บันทึกภาพเรียบร้อยแล้ว',
+                        title: 'Saved',
                         showConfirmButton: false,
                         timer: 1500
                     });
                     $boxSaveImg.empty().html(`<div class="alert alert-success">
-                                                    <strong>บันทึกภาพเรียบร้อยแล้ว!</strong>
+                                                    <strong>Saved!</strong>
                                                     </div>`);
                 } else if (res.status == "error") {
                     Swal.fire({
@@ -117,17 +152,19 @@ window.addEventListener('DOMContentLoaded', () => {
                         timer: 1500
                     });
                 }
-
+                tooltip.showTooltip(['#bt-camera']); // '#bt-predict'
             }).fail((res) => {
                 Swal.fire({
                     type: 'error',
-                    title: 'บันทึกภาพล้มเหลว',
+                    title: 'Save fail',
                     showConfirmButton: false,
                     timer: 1500
                 });
+                tooltip.showTooltip(['#bt-camera']); // '#bt-predict'
             });
         } else {
-            $("#leafs").focus();
+            $("#leafs").focus().attr('required', true);
+            $("#leafs")[0].checkValidity();
         }
     });
     // $("#select-leaf").on('hide.bs.modal', () => {
@@ -154,15 +191,17 @@ window.addEventListener('DOMContentLoaded', () => {
     $('[data-toggle="tooltip"]').tooltip();
 
     input.addEventListener('change', (e) => {
+        tooltip.hideAny(['#bt-camera', '#bt-predict']);
         var files = e.target.files;
-        var done = (imgUrl) => {
+        var done = (url) => {
             input.value = '';
-            image.src = imgUrl;
+            image.src = url;
             $alert.hide();
             $modal.modal('show');
         };
         var reader;
         var file;
+        var url;
 
         if (files && files.length > 0) {
             file = files[0];
@@ -171,7 +210,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 done(URL.createObjectURL(file));
             } else if (FileReader) {
                 reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = (e) => {
                     done(reader.result);
                 };
                 reader.readAsDataURL(file);
@@ -180,6 +219,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     predict.addEventListener('click', () => {
+        tooltip.hideAny(['#bt-camera', '#bt-predict']);
         $(predict).hide();
         $progressBar.width('0%').attr('aria-valuenow', '0').text('0%');
         $progress.show();
@@ -200,25 +240,50 @@ window.addEventListener('DOMContentLoaded', () => {
                     var xhr = new XMLHttpRequest();
 
                     xhr.upload.onprogress = (e) => {
+                        var percent = '0';
+                        var percentage = '0%';
+
                         if (e.lengthComputable) {
-                            let percent = Math.round((e.loaded / e.total) * 100);
-                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(`${percent}%`);
+                            percent = Math.round((e.loaded / e.total) * 100);
+                            percentage = percent + '%';
+                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
                         }
                     };
+
                     return xhr;
                 }
             }).done((res) => {
                 if (res.status == "success") {
                     $results.empty();
-                    if (sessionStorage.getItem("leafs") == null)
-                        sessionStorage.setItem("leafs", JSON.stringify(res.response.leafs));
+                    sessionStorage.setItem("leafs", JSON.stringify(res.response.leafs));
+                    if (res.response.notperfect_leaf == true) {
+                        $("#this_prefect").show();
+                    } else {
+                        $("#this_prefect").hide();
+                    }
                     $.each(res.response.results, (_i, result) => {
-                        if (_i == 0) sessionStorage.setItem("TopOne", result.leaf);
-                        $results.append(`<tr>
-                                            <td>${result.leafThai}</td>
+                        let perfect = ["perfect", "imperfect"];
+                        let score = parseInt(result.percent);
+                        let fadeColor = parseInt(score.map(0, 100, 80, 255).toFixed()).toString(16);
+                        let cls = '';
+                        if (_i == 0) {
+                            sessionStorage.setItem("TopOne", result.leaf);
+                            fadeColor = "ff";
+                            cls = 'class="table-success"';
+                        }
+                        if (res.response.notperfect_leaf == true) {
+                            $results.append(`<tr ${cls} style="color:#155724${fadeColor}">
+                                            <td>${result.leaf.replace(/(_leaf_notperfect|_leaf)/g,'').replace("_"," ")}</td>
                                             <td>${result.percent}%</td>
-                                            <td>${result.perfect}</td>
+                                            <td>${perfect[result.perfect]}</td>
+
                                         </tr>`);
+                        } else {
+                            $results.append(`<tr ${cls} style="color:#155724${fadeColor}">
+                                            <td>${result.leaf.split("_"," ")}</td>
+                                            <td>${result.percent}%</td>
+                                        </tr>`);
+                        }
                     });
                     $("#results-box").removeClass('d-none');
                     $alert.show().addClass('alert-success');
@@ -234,6 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 $("#results-box").addClass('d-none');
                 $alert.show().addClass('alert-warning').text('Upload error');
             }).always(() => {
+                tooltip.showTooltip(['#bt-camera']); // '#bt-predict'
                 $progress.hide();
             });
         });
@@ -256,12 +322,20 @@ window.addEventListener('DOMContentLoaded', () => {
     }).on('hidden.bs.modal', () => {
         cropper.destroy();
         cropper = null;
+        tooltip.hideAny(['#bt-predict', '#bt-predict']);
     });
     var initialAvatarURL;
     var canvas;
     document.getElementById('crop').addEventListener('click', () => {
         if (cropper) {
             $(predict).show();
+            tooltip.showTooltip(['#bt-predict']); // '#bt-predict'
+            setTimeout(() => {
+                $('#bt-predict').tooltip('show');
+            }, 1000);
+            setTimeout(() => {
+                $('#bt-predict').tooltip('hide');
+            }, 7000);
             canvas = cropper.getCroppedCanvas({
                 width: 768,
                 height: 1024,
@@ -271,7 +345,7 @@ window.addEventListener('DOMContentLoaded', () => {
             $("#leafShow").attr("src", canvas.toDataURL());
             $boxSaveImg.empty().html(`<button type="button" class="btn btn-primary" 
                                         data-toggle="modal" data-target="#report" 
-                                        id="bt-save">บันทึกภาพ</button>`);
+                                        id="bt-save">Save picture</button>`);
         }
     });
 });

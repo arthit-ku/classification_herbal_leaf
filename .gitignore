@@ -12,6 +12,8 @@ tf/tf_files/models/*
 !tf/tf_files/models/.empty
 tf/tf_files/training_summaries/*
 !tf/tf_files/training_summaries/.empty
+tf/tf_files/retrained_graphs/*
+!tf/tf_files/retrained_graphs/.empty
 tf/tf_files/uploads/dataset/*
 !tf/tf_files/uploads/dataset/.empty
 tf/tf_files/uploads/user-images/*
@@ -20,7 +22,6 @@ tf/tf_files/retrained_graph.pb
 tf/tf_files/retrained_labels.txt
 tf/tf_files/saved_models/*
 !tf/tf_files/saved_models/.empty
-tf_files
 ### Python ###
 __pycache__/
 

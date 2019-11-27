@@ -57,6 +57,14 @@ def main():
     return render_template('index.html')
 
 
+@app.route("/<string:lang>", methods=["GET"])
+def eng(lang):
+    if(lang == 'en'):
+        return render_template('eng.html')
+    else:
+        return render_template('index.html')
+
+
 @app.route("/predict", methods=["POST"])
 def prepare():
     file = request.files['file']
@@ -150,7 +158,7 @@ def preprocessing(file, locate_file_path, client_id):
         result = {}
         result["leaf"] = '{}'.format(labels[i])
         result["leafThai"] = leafName['{}'.format(labels[i])][0]
-        result["perfect"] = leafPerfect[leafName['{}'.format(labels[i])][1]]
+        result["perfect"] = leafName['{}'.format(labels[i])][1]
         result["percent"] = '{:0.2f}'.format(results[i]*100)
         Return["results"].append(result)
         print(template.format(labels[i], results[i]))
