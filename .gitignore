@@ -1,6 +1,7 @@
 ### My directory ###
 venv*/
 *checkpoint*
+tf/tf_files/bottlenecks_bnk/*
 tf/tf_files/bottlenecks/*
 !tf/tf_files/bottlenecks/.empty
 tf/tf_files/dataset/*
