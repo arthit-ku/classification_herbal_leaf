@@ -253,9 +253,9 @@ window.addEventListener('DOMContentLoaded', () => {
                     $results.empty();
                     sessionStorage.setItem("leafs", JSON.stringify(res.response.leafs));
                     if (res.response.notperfect_leaf == true) {
-                        $("#after_accurate").after('<th>สภาพใบ</th>');
+                        $("#this_accurate").show();
                     } else {
-                        $("#after_accurate").next('th').remove();
+                        $("#this_accurate").hide();
                     }
                     $.each(res.response.results, (_i, result) => {
                         let score = parseInt(result.percent);

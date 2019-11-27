@@ -217,7 +217,7 @@ def load_labels(label_file, path=False):
 
 if __name__ == "__main__":
     # enable notprefect mode
-    notperfect_leaf = False
+    notperfect_leaf = True
     file_name = "tf/tf_files/uploads/leaf.png"
     model_file = "tf/tf_files/retrained_graph.pb"
     label_file = "tf/tf_files/retrained_labels.txt"
