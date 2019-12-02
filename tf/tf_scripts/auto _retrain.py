@@ -10,12 +10,12 @@ import os.path
 import random
 import re
 import sys
-import tarfile
+# import tarfile
 import csv
 import time
 
 import numpy as np
-from six.moves import urllib
+# from six.moves import urllib
 import tensorflow as tf
 
 FLAGS = None
