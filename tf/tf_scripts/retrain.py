@@ -462,9 +462,11 @@ def save_graph_to_file(sess, graph, graph_file_name):
 
 def prepare_file_system():
     # Setup the directory we'll write summaries to for TensorBoard
-    if tf.compat.v1.gfile.Exists(FLAGS.summaries_dir):
-        tf.compat.v1.gfile.DeleteRecursively(FLAGS.summaries_dir)
-    tf.compat.v1.gfile.MakeDirs(FLAGS.summaries_dir)
+    if tf.compat.v1.gfile.Exists("{}/{}".format(FLAGS.summaries_dir, FLAGS.architecture)):
+        tf.compat.v1.gfile.DeleteRecursively(
+            "{}/{}".format(FLAGS.summaries_dir, FLAGS.architecture))
+    tf.compat.v1.gfile.MakeDirs(
+        "{}/{}".format(FLAGS.summaries_dir, FLAGS.architecture))
     if FLAGS.intermediate_store_frequency > 0:
         ensure_dir_exists(FLAGS.intermediate_output_graphs_dir)
     return
@@ -653,11 +655,11 @@ def main(_):
 
         # Merge all the summaries and write them out to the summaries_dir
         merged = tf.compat.v1.summary.merge_all()
-        train_writer = tf.compat.v1.summary.FileWriter(FLAGS.summaries_dir + '/train',
-                                                       sess.graph)
+        train_writer = tf.compat.v1.summary.FileWriter("{}/{}".format(FLAGS.summaries_dir, FLAGS.architecture) +
+                                                       '/train', sess.graph)
 
         validation_writer = tf.compat.v1.summary.FileWriter(
-            FLAGS.summaries_dir + '/validation')
+            "{}/{}".format(FLAGS.summaries_dir, FLAGS.architecture) + '/validation')
 
         # Set up all our weights to their initial default values.
         init = tf.compat.v1.global_variables_initializer()
@@ -795,7 +797,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--summaries_dir',
         type=str,
-        default='tf/tf_files/training_summaries/inception_v3',
+        default='tf/tf_files/training_summaries/',
         help='Where to save summary logs for TensorBoard.'
     )
     parser.add_argument(
